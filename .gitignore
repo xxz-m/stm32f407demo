@@ -1,0 +1,43 @@
+# --- Keil MDK (uvision) ---
+*.uvguix.* # 视图布局文件
+*.uvgui.*
+*.bak             # 备份文件
+*.dep             # 依赖文件
+*.iex
+*.lnp
+*.lst
+*.map             # 内存映射文件
+*.htm
+*.build_log.htm
+*.sct
+*.dep
+*.crf
+*.o
+*.d
+*.axf
+*.elf
+*.bin             # 固件文件（通常不上传）
+*.hex             # 固件文件
+Listings/         # Keil 默认生成的输出目录
+Objects/          # Keil 默认生成的对象目录
+RTE/              # 运行环境文件（通常由 IDE 生成）
+
+# --- STM32CubeIDE / Eclipse / TrueSTUDIO ---
+.settings/
+Debug/
+Release/
+*.launch
+.project
+.cproject
+
+# --- VS Code (如果你用 VS Code 开发) ---
+.vscode/
+build/
+
+# --- 操作系统与临时文件 ---
+Thumbs.db
+Desktop.ini
+.DS_Store
+*.tmp
+*.bak
+*.orig
