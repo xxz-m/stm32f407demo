@@ -89,7 +89,7 @@ int main(void)
   MX_GPIO_Init();
   MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
-
+	Core_Main_Init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -99,6 +99,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+		Core_Main_Master();
   }
   /* USER CODE END 3 */
 }
