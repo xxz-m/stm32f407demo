@@ -56,7 +56,8 @@ void Motor_init(void) {
     motorR.IN1_Pin  = MOTOR_BIN1_PIN;
     motorR.IN2_Port = GPIOB;
     motorR.IN2_Pin  = MOTOR_BIN2_PIN;
-		
+		//tb6612使能引脚拉高
+		HAL_GPIO_WritePin(MOTOR_STBY_PORT,MOTOR_STBY_PIN,GPIO_PIN_SET);
     TB6612_Motor_Init(&motorL);
     TB6612_Motor_Init(&motorR);
 }
