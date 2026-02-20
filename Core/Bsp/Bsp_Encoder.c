@@ -26,7 +26,7 @@ void Encoder_Update_Speed(Encoder_t *m1, Encoder_t *m2) {
     // 2. 计算 RPM = (脉冲数 / (单圈脉冲 * 4 * 减速比)) / 时间(s) * 60
     float common_factor = (ENCODER_PPR * 4.0f * MOTOR_REDUCTION_RATIO * SAMPLE_TIME_S);
     
-    m1->speed_rpm = (cnt1 * 60.0f) / common_factor;
+    m1->speed_rpm = -(cnt1 * 60.0f) / common_factor;
     m2->speed_rpm = (cnt2 * 60.0f) / common_factor;
 
     // 3. 计数值清零，为下一次采样准备
