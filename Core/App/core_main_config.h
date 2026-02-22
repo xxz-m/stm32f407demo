@@ -1,51 +1,65 @@
-#ifndef __CORE__MAIN_CONFIG_H__
-#define __CORE__MAIN_CONFIG_H__
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-/* Includes ------------------------------------------------------------------*/
-#include "main.h"
-/*-----------------------------APP²ã-------------*/
-#include "core_main.h"
-/*-----------------------------BSP²ã-------------*/
-#include "tim.h"
-#include "bsp_tb6612.h"
-#include "bsp_encoder.h"
-#include "DWT_delay.h"
-/*---------------------------ÓÃ»§´úÂë-----------*/
-
-
-
-/* µç»úÇı¶¯Òı½Å¶¨Òå */
-#define MOTOR_AIN1_PORT  GPIOB
-#define MOTOR_AIN1_PIN   GPIO_PIN_12
-#define MOTOR_AIN2_PORT  GPIOB
-#define MOTOR_AIN2_PIN   GPIO_PIN_13
-
-#define MOTOR_BIN1_PORT  GPIOB
-#define MOTOR_BIN1_PIN   GPIO_PIN_14
-#define MOTOR_BIN2_PORT  GPIOB
-#define MOTOR_BIN2_PIN   GPIO_PIN_15
-
-/* µç»úÊ¹ÄÜÒı½Å */
-#define MOTOR_STBY_PORT  GPIOC
-#define MOTOR_STBY_PIN   GPIO_PIN_13
-
-/* LED Òı½Å¶¨Òå (LED4-1: PC8, PC9, PD15, PD14) */
-#define LED4_PORT       GPIOC
-#define LED4_PIN        GPIO_PIN_8
-#define LED3_PORT       GPIOC
-#define LED3_PIN        GPIO_PIN_9
-#define LED2_PORT       GPIOD
-#define LED2_PIN        GPIO_PIN_15
-#define LED1_PORT       GPIOD
-#define LED1_PIN        GPIO_PIN_14
-
-// ÓÃ»§´úÂë½áÊø
-
-#ifdef __cplusplus
-}
-#endif
-#endif /*__CORE__MAIN_CONFIG_H__ */
+#ifndef __CORE__MAIN_CONFIG_H__
+#define __CORE__MAIN_CONFIG_H__
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/* Includes ------------------------------------------------------------------*/
+#include "main.h"
+/*-----------------------------APPå±‚-------------*/
+#include "core_main.h"
+/*-----------------------------BSPå±‚-------------*/
+#include "tim.h"
+#include "bsp_tb6612.h"
+#include "bsp_encoder.h"
+#include "DWT_delay.h"
+/*---------------------------ç”¨æˆ·å˜é‡-----------*/
+
+
+
+/* ç”µæœºé©±åŠ¨å¼•è„šå®šä¹‰ */
+#define MOTOR_AIN1_PORT  GPIOB
+#define MOTOR_AIN1_PIN   GPIO_PIN_12
+#define MOTOR_AIN2_PORT  GPIOB
+#define MOTOR_AIN2_PIN   GPIO_PIN_13
+
+#define MOTOR_BIN1_PORT  GPIOB
+#define MOTOR_BIN1_PIN   GPIO_PIN_14
+#define MOTOR_BIN2_PORT  GPIOB
+#define MOTOR_BIN2_PIN   GPIO_PIN_15
+
+/* ç”µæœºä½¿èƒ½å¼•è„š */
+#define MOTOR_STBY_PORT  GPIOC
+#define MOTOR_STBY_PIN   GPIO_PIN_13
+
+/* LED å®å®šä¹‰ (LED4-1: PC8, PC9, PD15, PD14) */
+#define LED4_PORT       GPIOC
+#define LED4_PIN        GPIO_PIN_8
+#define LED3_PORT       GPIOC
+#define LED3_PIN        GPIO_PIN_9
+#define LED2_PORT       GPIOD
+#define LED2_PIN        GPIO_PIN_15
+#define LED1_PORT       GPIOD
+#define LED1_PIN        GPIO_PIN_14
+
+/* æŒ‰é”®å¼•è„šå®šä¹‰ (KEY1-KEY4: PE4, PE5, PE7, PE8) */
+#define KEY1_PORT       GPIOE
+#define KEY1_PIN        GPIO_PIN_4
+#define KEY2_PORT       GPIOE
+#define KEY2_PIN        GPIO_PIN_5
+#define KEY3_PORT       GPIOE
+#define KEY3_PIN        GPIO_PIN_7
+#define KEY4_PORT       GPIOE
+#define KEY4_PIN        GPIO_PIN_8
+
+/* è°ƒè¯•æ‰“å°å®å®šä¹‰ */
+#define DEBUG_GPS_PRINT    0  // ç½®1å¼€å¯GPSåŸå§‹æ•°æ®æ‰“å°ï¼Œç½®0å…³é—­
+#define DEBUG_OPENMV_PRINT 0  // ç½®1å¼€å¯OpenMVæ•°æ®æ‰“å°ï¼Œç½®0å…³é—­
+
+// ç”¨æˆ·è‡ªå®šä¹‰
+
+#ifdef __cplusplus
+}
+#endif
+#endif /*__CORE__MAIN_CONFIG_H__ */

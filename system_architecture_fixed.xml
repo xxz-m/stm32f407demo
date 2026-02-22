@@ -1,0 +1,125 @@
+<mxGraphModel dx="1000" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+  <root>
+    <mxCell id="0" />
+    <mxCell id="1" parent="0" />
+    <mxCell id="2" value="STM32F407ZGT6" style="swimlane;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;startSize=23;fontStyle=1" vertex="1" parent="1">
+      <mxGeometry x="320" y="160" width="280" height="320" as="geometry" />
+    </mxCell>
+    <mxCell id="3" value="USART6" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="2">
+      <mxGeometry x="20" y="40" width="80" height="30" as="geometry" />
+    </mxCell>
+    <mxCell id="4" value="USART3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="2">
+      <mxGeometry x="20" y="90" width="80" height="30" as="geometry" />
+    </mxCell>
+    <mxCell id="5" value="USART2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="2">
+      <mxGeometry x="20" y="140" width="80" height="30" as="geometry" />
+    </mxCell>
+    <mxCell id="6" value="TIM4 (PWM)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="2">
+      <mxGeometry x="100" y="270" width="80" height="30" as="geometry" />
+    </mxCell>
+    <mxCell id="7" value="TIM3/TIM5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="2">
+      <mxGeometry x="180" y="270" width="80" height="30" as="geometry" />
+    </mxCell>
+    <mxCell id="8" value="I2C1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="2">
+      <mxGeometry x="180" y="40" width="80" height="30" as="geometry" />
+    </mxCell>
+    <mxCell id="9" value="GPIO (LED)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="2">
+      <mxGeometry x="180" y="90" width="80" height="30" as="geometry" />
+    </mxCell>
+    <mxCell id="10" value="GPIO (Key)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="2">
+      <mxGeometry x="20" y="190" width="80" height="30" as="geometry" />
+    </mxCell>
+    <mxCell id="11" value="OpenMV 摄像头" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+      <mxGeometry x="80" y="180" width="120" height="60" as="geometry" />
+    </mxCell>
+    <mxCell id="12" value="GPS 模块" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+      <mxGeometry x="80" y="260" width="120" height="60" as="geometry" />
+    </mxCell>
+    <mxCell id="13" value="ESP8266 WiFi" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+      <mxGeometry x="80" y="340" width="120" height="60" as="geometry" />
+    </mxCell>
+    <mxCell id="14" value="用户按键 (x4)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+      <mxGeometry x="80" y="420" width="120" height="40" as="geometry" />
+    </mxCell>
+    <mxCell id="15" value="OLED 显示屏" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+      <mxGeometry x="700" y="180" width="120" height="60" as="geometry" />
+    </mxCell>
+    <mxCell id="16" value="LED 指示灯 (x4)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+      <mxGeometry x="700" y="260" width="120" height="40" as="geometry" />
+    </mxCell>
+    <mxCell id="17" value="TB6612 电机驱动" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+      <mxGeometry x="380" y="560" width="160" height="60" as="geometry" />
+    </mxCell>
+    <mxCell id="18" value="左电机" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+      <mxGeometry x="280" y="660" width="80" height="80" as="geometry" />
+    </mxCell>
+    <mxCell id="19" value="右电机" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+      <mxGeometry x="560" y="660" width="80" height="80" as="geometry" />
+    </mxCell>
+    <mxCell id="20" value="编码器 L" style="rounded=0;whiteSpace=wrap;html=1;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="300" y="750" width="60" height="20" as="geometry" />
+    </mxCell>
+    <mxCell id="21" value="编码器 R" style="rounded=0;whiteSpace=wrap;html=1;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="560" y="750" width="60" height="20" as="geometry" />
+    </mxCell>
+    <mxCell id="22" value="电池电源" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+      <mxGeometry x="380" y="40" width="160" height="40" as="geometry" />
+    </mxCell>
+    <mxCell id="23" edge="1" parent="1" source="11" target="3">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="24" edge="1" parent="1" source="12" target="4">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="25" edge="1" parent="1" source="13" target="5">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="26" edge="1" parent="1" source="14" target="10">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="27" edge="1" parent="1" source="8" target="15">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="28" edge="1" parent="1" source="9" target="16">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="29" value="PWM" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="6" target="17">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="30" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="17" target="18">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="31" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="17" target="19">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="32" value="Pulse" style="edgeStyle=orthogonalEdgeStyle;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="20" target="7">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="330" y="780" />
+          <mxPoint x="660" y="780" />
+          <mxPoint x="660" y="520" />
+          <mxPoint x="540" y="520" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="33" value="Pulse" style="edgeStyle=orthogonalEdgeStyle;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="21" target="7">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="590" y="780" />
+          <mxPoint x="660" y="780" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="34" value="VCC" style="edgeStyle=orthogonalEdgeStyle;dashed=1;" edge="1" parent="1" source="22" target="2">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="35" value="VM" style="edgeStyle=orthogonalEdgeStyle;dashed=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="22" target="17">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="300" y="60" />
+          <mxPoint x="300" y="590" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+  </root>
+</mxGraphModel>

@@ -5,119 +5,145 @@
 #include "pid.h"
 #include "Bsp_GPS.h"
 #include "Bsp_Led.h"
+#include "Bsp_Key.h"
+#include "Bsp_OpenMV.h"
+#include "tim.h"
+#include "usart.h"
 #include <stdio.h>
 
-/* ×óÓÒµç»úÇý¶¯¶ÔÏó£¨ÔÚÆäËûÄ£¿éÖÐ¶¨Òå£© */
+/* å·¦å³ç”µæœºé©±åŠ¨å¯¹è±¡ï¼ˆåœ¨å…¶ä»–æ¨¡å—ä¸­å®šä¹‰ï¼‰ */
 extern TB6612_Motor_t motorL;
 extern TB6612_Motor_t motorR;
-/* ×óÓÒ±àÂëÆ÷¶ÔÏó£¨ÔÚÆäËûÄ£¿éÖÐ¶¨Òå£© */
+/* å·¦å³ç¼–ç å™¨å¯¹è±¡ï¼ˆåœ¨å…¶ä»–æ¨¡å—ä¸­å®šä¹‰ï¼‰ */
 extern Encoder_t motor1;
 extern Encoder_t motor2;
 
-/* PID ¿ØÖÆÆ÷¶ÔÏó */
-static PID_Controller_t pid_L;
-static PID_Controller_t pid_R;
+/* PID æŽ§åˆ¶å™¨å¯¹è±¡ */
+//static PID_Controller_t pid_L;
+//static PID_Controller_t pid_R;
 
-/* ÈÎÎñº¯ÊýÉùÃ÷ */
-static void Task_RobotControl(void *arg);
+/* ä»»åŠ¡å‡½æ•°å£°æ˜Ž */
+//static void Task_RobotControl(void *arg);
 static void Task_UIUpdate(void *arg);
 static void Task_Comm(void *arg);
 static void Task_LedRun(void *arg);
 
 /**
- * @brief ºËÐÄÄ£¿é³õÊ¼»¯
- * @note  Íê³Éµç»úÇý¶¯Óë±àÂëÆ÷Ä£¿é³õÊ¼»¯£¬½¨ÒéÔÚÏµÍ³Æô¶¯Ê±µ÷ÓÃÒ»´Î
+ * @brief æ ¸å¿ƒæ¨¡å—åˆå§‹åŒ–
+ * @note  å®Œæˆç”µæœºé©±åŠ¨ä¸Žç¼–ç å™¨æ¨¡å—åˆå§‹åŒ–ï¼Œå»ºè®®åœ¨ç³»ç»Ÿå¯åŠ¨æ—¶è°ƒç”¨ä¸€æ¬¡
  */
 void Core_Main_Init(void)
 {
     printf("[Core_Main_Init] Start...\r\n");
 
-	/* ³õÊ¼»¯ TB6612 µç»úÇý¶¯ */
+	/* åˆå§‹åŒ– TB6612 ç”µæœºé©±åŠ¨ */
 	Motor_init();
     printf("[Core_Main_Init] Motor Init done.\r\n");
 
-	/* ³õÊ¼»¯±àÂëÆ÷²É¼¯ */
+	/* åˆå§‹åŒ–ç¼–ç å™¨é‡‡é›† */
 	Encoder_Init();
     printf("[Core_Main_Init] Encoder Init done.\r\n");
 
-	/* ³õÊ¼»¯ DWT ¾«ÃÜÑÓÊ± */
+	/* åˆå§‹åŒ– DWT ç²¾å¯†å»¶æ—¶ */
 	delay_init();
     printf("[Core_Main_Init] DWT Delay Init done.\r\n");
 
-	/* ³õÊ¼»¯Í¨ÐÅÄ£¿é */
+	/* åˆå§‹åŒ–é€šä¿¡æ¨¡å— */
 	App_Comm_Init();
     printf("[Core_Main_Init] Comm Init done.\r\n");
 	
-	/* ³õÊ¼»¯ GPS Ä£¿é (PE9Ê¹ÄÜ, DMA+IDLE½ÓÊÕ) */
+	/* åˆå§‹åŒ– GPS æ¨¡å— (PE9ä½¿èƒ½, DMA+IDLEæŽ¥æ”¶) */
 	GPS_Init();
     printf("[Core_Main_Init] GPS Init done.\r\n");
 	
-	/* ³õÊ¼»¯ LED Ä£¿é (Ä¬ÈÏÏ¨Ãð) */
+	/* åˆå§‹åŒ– LED æ¨¡å— (é»˜è®¤ç†„ç­) */
 	BSP_LED_Init();
     printf("[Core_Main_Init] LED Init done.\r\n");
 
-    /* ³õÊ¼»¯ PID (ËÙ¶È»·Í¨³£½öÊ¹ÓÃ PI ¿ØÖÆ£¬Î¢·ÖÏî Kd ÉèÎª 0 ÒÔ±ÜÃâÔëÉù·Å´ó) */
-    /* ¼ÙÉèÄ¿±êËÙ¶È 100RPM, PWM max 4200. Kp=10~50? Ki=0.5? Kd=0.0 */
+    /* åˆå§‹åŒ–æŒ‰é”®æ¨¡å— */
+    BSP_Key_Init();
+    /* å¯åŠ¨ TIM13 å®šæ—¶å™¨ä¸­æ–­ (10ms) ç”¨äºŽæŒ‰é”®æ¶ˆæŠ– */
+    HAL_TIM_Base_Start_IT(&htim13);
+    printf("[Core_Main_Init] Key Init done (TIM13 Started).\r\n");
+
+    /* åˆå§‹åŒ– OpenMV æ¨¡å— (ä½¿ç”¨ USART6) */
+    OpenMV_Init(&huart6);
+    
+    /* åˆå§‹åŒ–è·ŸéšæŽ§åˆ¶ PID */
+    App_Follow_Init();
+    printf("[Core_Main_Init] Follow PID Init done.\r\n");
+    
+    /* å¯åŠ¨ TIM14 å®šæ—¶å™¨ä¸­æ–­ (10ms) ç”¨äºŽ OpenMV è§£æžå’Œ PID */
+    HAL_TIM_Base_Start_IT(&htim14);
+    printf("[Core_Main_Init] OpenMV Init done (USART6) & TIM14 Started.\r\n");
+
+    /* åˆå§‹åŒ– PID (æ—§çš„ PID åˆå§‹åŒ–æ³¨é‡ŠæŽ‰ï¼Œä½¿ç”¨æ–°çš„è·ŸéšæŽ§åˆ¶ PID) */
+    /*
     PID_Init(&pid_L, 10.0f, 0.5f, 0.0f, 4200.0f, 2000.0f);
     PID_Init(&pid_R, 12.0f, 0.5f, 0.0f, 4200.0f, 2000.0f);
     printf("[Core_Main_Init] PID Init done.\r\n");
-
-		/* ³õÊ¼»¯ UI ÏÔÊ¾ */
+    */
+    
+    /* åˆå§‹åŒ– UI æ˜¾ç¤º */
 		App_UI_Init();
     printf("[Core_Main_Init] UI Init done.\r\n");
 	
-    /* ³õÊ¼»¯ OS */
+    /* åˆå§‹åŒ– OS */
     OS_Init();
     printf("[Core_Main_Init] OS Init done.\r\n");
 
-    /* ´´½¨ÈÎÎñ */
-    // »úÆ÷ÈËÖ÷¿ØÈÎÎñ£ºÓÅÏÈ¼¶ 2 (¸ß)
-    OS_CreateTask(Task_RobotControl, NULL, 2);
+    /* åˆ›å»ºä»»åŠ¡ */
+    // æœºå™¨äººä¸»æŽ§ä»»åŠ¡ï¼šä¼˜å…ˆçº§ 2 (é«˜)
+    // OS_CreateTask(Task_RobotControl, NULL, 2); // æ³¨é‡ŠæŽ‰ï¼šæŽ§åˆ¶é€»è¾‘å·²ç§»è‡³ TIM14 ä¸­æ–­
     
-    // UI ¸üÐÂÈÎÎñ£ºÓÅÏÈ¼¶ 1 (µÍ)
+    // UI æ›´æ–°ä»»åŠ¡ï¼šä¼˜å…ˆçº§ 1 (ä½Ž)
     OS_CreateTask(Task_UIUpdate, NULL, 1);
     
-    // GPS ´¦ÀíÈÎÎñ£ºÓÅÏÈ¼¶ 1 (µÍ, 200msÖÜÆÚ)
+    // GPS å¤„ç†ä»»åŠ¡ï¼šä¼˜å…ˆçº§ 1 (ä½Ž, 200mså‘¨æœŸ)
     OS_CreateTask(GPS_Process_Task, NULL, 1);
     
-    // LED ÅÜÂíµÆÈÎÎñ£ºÓÅÏÈ¼¶ 0 (×îµÍ, ×èÈûÊ½Âß¼­)
+    // OpenMV è°ƒè¯•æ‰“å°ä»»åŠ¡ï¼šä¼˜å…ˆçº§ 1 (ä½Ž)
+    OS_CreateTask(OpenMV_Print_Task, NULL, 1);
+
+    // LED è·‘é©¬ç¯ä»»åŠ¡ï¼šä¼˜å…ˆçº§ 0 (æœ€ä½Ž, é˜»å¡žå¼é€»è¾‘)
     OS_CreateTask(Task_LedRun, NULL, 0);
 
-    // Í¨ÐÅ´¦ÀíÈÎÎñ£ºÓÅÏÈ¼¶ 3 (×î¸ß)
+    // é€šä¿¡å¤„ç†ä»»åŠ¡ï¼šä¼˜å…ˆçº§ 3 (æœ€é«˜)
     OS_CreateTask(Task_Comm, NULL, 3);
     
     printf("[Core_Main_Init] All tasks created. System Ready.\r\n");
 }
 
 /**
- * @brief Ö÷¿ØÈÎÎñÊ¾Àý
- * @note  µ±Ç°Âß¼­Îª×óÓÒµç»úÉèÖÃÏàÍ¬ËÙ¶È£¬¿É°´ÐèÌæ»»Îª¿ØÖÆËã·¨Êä³ö
+ * @brief ä¸»æŽ§ä»»åŠ¡ç¤ºä¾‹
+ * @note  å½“å‰é€»è¾‘ä¸ºå·¦å³ç”µæœºè®¾ç½®ç›¸åŒé€Ÿåº¦ï¼Œå¯æŒ‰éœ€æ›¿æ¢ä¸ºæŽ§åˆ¶ç®—æ³•è¾“å‡º
  */
 void Core_Main_Master(void)
 {
-    /* Æô¶¯ OS µ÷¶ÈÆ÷ (ËÀÑ­»·) */
+    /* å¯åŠ¨ OS è°ƒåº¦å™¨ (æ­»å¾ªçŽ¯) */
     OS_Start();
 }
 
 /**
- * @brief »úÆ÷ÈËÖ÷¿ØÈÎÎñ
- * @param arg ÈÎÎñ²ÎÊý (Î´Ê¹ÓÃ)
+ * @brief æœºå™¨äººä¸»æŽ§ä»»åŠ¡ (åºŸå¼ƒ)
+ * @param arg ä»»åŠ¡å‚æ•° (æœªä½¿ç”¨)
  */
+#if 0
 static void Task_RobotControl(void *arg)
 {
-    /* Ä¿±êÖµ±äÁ¿ */
+    /* ç›®æ ‡å€¼å˜é‡ */
     float pwm_L = 0.0f;
     float pwm_R = 0.0f;
     float target_speed_L = 0.0f;
     float target_speed_R = 0.0f;
     
-    /* »ù´¡²ÎÊý */
-    const float MANUAL_PWM = 500.0f; // ÊÖ¶¯Ä£Ê½Ö±½Ó PWM (0~4200)
-    const float AUTO_RPM   = 500.0f;  // ×Ô¶¯Ä£Ê½Ä¿±ê×ªËÙ (RPM)
+    /* åŸºç¡€å‚æ•° */
+    const float MANUAL_PWM = 500.0f; // æ‰‹åŠ¨æ¨¡å¼ç›´æŽ¥ PWM (0~4200)
+    const float AUTO_RPM   = 500.0f;  // è‡ªåŠ¨æ¨¡å¼ç›®æ ‡è½¬é€Ÿ (RPM)
     
-    /* 1. Ä£Ê½ÅÐ¶ÏÓë¿ØÖÆÁ¿¼ÆËã */
+    /* 1. æ¨¡å¼åˆ¤æ–­ä¸ŽæŽ§åˆ¶é‡è®¡ç®— */
     if (g_robot_mode == MODE_MANUAL) {
-        /* ---------------- ÊÖ¶¯Ä£Ê½ (¿ª»· PWM ¿ØÖÆ) ---------------- */
+        /* ---------------- æ‰‹åŠ¨æ¨¡å¼ (å¼€çŽ¯ PWM æŽ§åˆ¶) ---------------- */
         switch (g_remote_cmd) {
             case CMD_FORWARD:
                 pwm_L = MANUAL_PWM;
@@ -127,11 +153,11 @@ static void Task_RobotControl(void *arg)
                 pwm_L = -MANUAL_PWM;
                 pwm_R = -MANUAL_PWM;
                 break;
-            case CMD_LEFT: // Ô­µØ×ó×ª
+            case CMD_LEFT: // åŽŸåœ°å·¦è½¬
                 pwm_L = -MANUAL_PWM;
                 pwm_R = MANUAL_PWM;
                 break;
-            case CMD_RIGHT: // Ô­µØÓÒ×ª
+            case CMD_RIGHT: // åŽŸåœ°å³è½¬
                 pwm_L = MANUAL_PWM;
                 pwm_R = -MANUAL_PWM;
                 break;
@@ -142,68 +168,68 @@ static void Task_RobotControl(void *arg)
                 break;
         }
         
-        /* ÊÖ¶¯Ä£Ê½ÏÂÖØÖÃ PID£¬±ÜÃâ»ý·ÖÀÛ»ý */
+        /* æ‰‹åŠ¨æ¨¡å¼ä¸‹é‡ç½® PIDï¼Œé¿å…ç§¯åˆ†ç´¯ç§¯ */
         PID_Reset(&pid_L);
         PID_Reset(&pid_R);
         
     } else {
-        /* ---------------- ×Ô¶¯Ä£Ê½ (±Õ»· PID Ö±ÏßÐÐÊ») ---------------- */
+        /* ---------------- è‡ªåŠ¨æ¨¡å¼ (é—­çŽ¯ PID ç›´çº¿è¡Œé©¶) ---------------- */
         
-        /* Éè¶¨Ä¿±êËÙ¶È: ×óÂÖ¶¨ËÙ£¬ÓÒÂÖ¸úËæ */
+        /* è®¾å®šç›®æ ‡é€Ÿåº¦: å·¦è½®å®šé€Ÿï¼Œå³è½®è·Ÿéš */
         target_speed_L = AUTO_RPM;
-        target_speed_R = motor1.speed_rpm; // Ö÷´Ó¿ØÖÆ£ºÓÒÂÖ¸úËæ×óÂÖÊµ¼ÊËÙ¶È
+        target_speed_R = motor1.speed_rpm; // ä¸»ä»ŽæŽ§åˆ¶ï¼šå³è½®è·Ÿéšå·¦è½®å®žé™…é€Ÿåº¦
         
-        /* ÔËÐÐ PID ¼ÆËã PWM Êä³ö */
+        /* è¿è¡Œ PID è®¡ç®— PWM è¾“å‡º */
         pwm_L = target_speed_L;
         pwm_R = PID_Compute(&pid_R, target_speed_R, motor2.speed_rpm);
     }
     
-    /* 2. Ö´ÐÐµç»ú¿ØÖÆ */
+    /* 2. æ‰§è¡Œç”µæœºæŽ§åˆ¶ */
     TB6612_Motor_SetSpeed(&motorL, (int16_t)pwm_L);
     TB6612_Motor_SetSpeed(&motorR, (int16_t)pwm_R);
     
-    // ÑÓÊ± 20ms£¬ÈÃ³ö CPU
+    // å»¶æ—¶ 20msï¼Œè®©å‡º CPU
     OS_DelayMs(10);
 }
+#endif
 
 /**
- * @brief Í¨ÐÅ´¦ÀíÈÎÎñ
+ * @brief é€šä¿¡å¤„ç†ä»»åŠ¡
  */
 static void Task_Comm(void *arg)
 {
-    /* µ÷ÓÃÍ¨ÐÅÄ£¿éµÄ´¦Àíº¯Êý */
+    /* è°ƒç”¨é€šä¿¡æ¨¡å—çš„å¤„ç†å‡½æ•° */
     App_Comm_ProcessTask();
     
-    /* ÑÓÊ± 10ms */
+    /* å»¶æ—¶ 10ms */
     OS_DelayMs(10);
 }
 
 /**
- * @brief UI ¸üÐÂÈÎÎñ
+ * @brief UI æ›´æ–°ä»»åŠ¡
  */
 static void Task_UIUpdate(void *arg)
 {
-    /* ¸üÐÂ UI ÏÔÊ¾ (´«Èë GPS Êý¾Ý) */
-    // App_UI_Update(&motor1, &motor2); // ÔÝÊ±ÆÁ±Îµç»úËÙ¶ÈÏÔÊ¾
-    App_UI_ShowGPS(&gps_data);
+    /* è°ƒç”¨æ–°çš„èœå•åˆ·æ–°å‡½æ•° (åŒ…å«æŒ‰é”®å¤„ç†) */
+    App_UI_Refresh();
     
-    // ÑÓÊ± 200ms£¬ÈÃ³ö CPU
-    OS_DelayMs(200);
+    // å»¶æ—¶ 50msï¼Œæé«˜ UI å“åº”é€Ÿåº¦
+    OS_DelayMs(50);
 }
 
 /**
- * @brief LED ÅÜÂíµÆÈÎÎñ
- * @param arg ÈÎÎñ²ÎÊý (Î´Ê¹ÓÃ)
- * @note  ×èÈûÊ½Âß¼­£¬ÀûÓÃ OS_DelayMs ÇÐ»»×´Ì¬
- *        Ë³Ðò: LED1 -> LED2 -> LED3 -> LED4 -> LED1 ...
+ * @brief LED è·‘é©¬ç¯ä»»åŠ¡
+ * @param arg ä»»åŠ¡å‚æ•° (æœªä½¿ç”¨)
+ * @note  é˜»å¡žå¼é€»è¾‘ï¼Œåˆ©ç”¨ OS_DelayMs åˆ‡æ¢çŠ¶æ€
+ *        é¡ºåº: LED1 -> LED2 -> LED3 -> LED4 -> LED1 ...
  */
 static void Task_LedRun(void *arg)
 {
     static uint8_t step = 0;
-    const uint32_t LED_DELAY = 200; // 200ms ÇÐ»»Ò»´Î
+    const uint32_t LED_DELAY = 200; // 200ms åˆ‡æ¢ä¸€æ¬¡
 
-    // ÏÈÏ¨ÃðËùÓÐ LED (»òÕßÖ»Ï¨ÃðÉÏÒ»¸ö)
-    // ÎªÁË¼òµ¥ÇÒ½¡×³£¬¸ù¾Ý step ¾ö¶¨ÁÁÄÄ¸ö£¬ÆäËûÃð
+    // å…ˆç†„ç­æ‰€æœ‰ LED (æˆ–è€…åªç†„ç­ä¸Šä¸€ä¸ª)
+    // ä¸ºäº†ç®€å•ä¸”å¥å£®ï¼Œæ ¹æ® step å†³å®šäº®å“ªä¸ªï¼Œå…¶ä»–ç­
     
     switch (step)
     {
@@ -236,24 +262,35 @@ static void Task_LedRun(void *arg)
             break;
     }
 
-    // ÇÐ»»µ½ÏÂÒ»¸ö×´Ì¬
+    // åˆ‡æ¢åˆ°ä¸‹ä¸€ä¸ªçŠ¶æ€
     step++;
     if (step >= 4) {
         step = 0;
     }
 
-    // ×èÈûÑÓÊ±£¬ÈÃ³ö CPU
+    // é˜»å¡žå»¶æ—¶ï¼Œè®©å‡º CPU
     OS_DelayMs(LED_DELAY);
 }
 
 /**
- * @brief ¶¨Ê±Æ÷ÖÜÆÚÖÐ¶Ï»Øµ÷º¯Êý
- * @param htim ´¥·¢»Øµ÷µÄ¶¨Ê±Æ÷¾ä±ú
- * @note  ½öÔÚ TIM14 ÖÐ¶ÏÊ±¸üÐÂ±àÂëÆ÷ËÙ¶È
+ * @brief å®šæ—¶å™¨å‘¨æœŸä¸­æ–­å›žè°ƒå‡½æ•°
+ * @param htim è§¦å‘å›žè°ƒçš„å®šæ—¶å™¨å¥æŸ„
+ * @note  ä»…åœ¨ TIM14 ä¸­æ–­æ—¶æ›´æ–°ç¼–ç å™¨é€Ÿåº¦
  */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
-    /* ÓÉ TIM14 ÖÜÆÚÖÐ¶Ï´¥·¢±àÂëÆ÷ËÙ¶È¸üÐÂ */
+    /* ç”± TIM14 å‘¨æœŸä¸­æ–­è§¦å‘ç¼–ç å™¨é€Ÿåº¦æ›´æ–° */
     if (htim->Instance == TIM14) {
+        /* 1. OpenMV è§£æž (Updating openmv_data) */
+        OpenMV_Parse_Callback();
+        
+        /* 2. Update Speed (Updating motor.speed_rpm) */
         Encoder_Update_Speed(&motor1, &motor2);
+        
+        /* 3. Control Loop (Using openmv_data and speed_rpm) */
+        App_Follow_Control_Loop();
+    }
+    /* ç”± TIM13 å‘¨æœŸä¸­æ–­è§¦å‘æŒ‰é”®æ¶ˆæŠ– (10ms) */
+    else if (htim->Instance == TIM13) {
+        BSP_Key_Scan_10ms();
     }
 }

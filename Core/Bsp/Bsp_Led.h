@@ -1,6 +1,6 @@
 /**
  * @file    Bsp_Led.h
- * @brief   LED é©±åŠ¨æ¨¡å—å¤´æ–‡ä»¶
+ * @brief   LED Çı¶¯Í·ÎÄ¼ş (LED Driver Header)
  * @date    2026-02-20
  */
 #ifndef __BSP_LED_H
@@ -8,7 +8,7 @@
 
 #include "main.h"
 
-// LED æšä¸¾
+// LED Ë÷ÒıÃ¶¾Ù (LED Index)
 typedef enum {
     LED_1 = 0, // PD14
     LED_2,     // PD15
@@ -17,25 +17,25 @@ typedef enum {
 } LED_Index_t;
 
 /**
- * @brief åˆå§‹åŒ– LED çŠ¶æ€
+ * @brief ³õÊ¼»¯ LED (Initialize LED)
  */
 void BSP_LED_Init(void);
 
 /**
- * @brief ç‚¹äº®æŒ‡å®š LED
- * @param led LED ç´¢å¼•
+ * @brief µãÁÁ LED (Turn ON LED)
+ * @param led LED Ë÷Òı (LED Index)
  */
 void BSP_LED_On(LED_Index_t led);
 
 /**
- * @brief ç†„ç­æŒ‡å®š LED
- * @param led LED ç´¢å¼•
+ * @brief Ï¨Ãğ LED (Turn OFF LED)
+ * @param led LED Ë÷Òı (LED Index)
  */
 void BSP_LED_Off(LED_Index_t led);
 
 /**
- * @brief ç¿»è½¬æŒ‡å®š LED
- * @param led LED ç´¢å¼•
+ * @brief ·­×ª LED (Toggle LED)
+ * @param led LED Ë÷Òı (LED Index)
  */
 void BSP_LED_Toggle(LED_Index_t led);
 

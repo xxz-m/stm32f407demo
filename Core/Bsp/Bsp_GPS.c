@@ -180,7 +180,9 @@ void GPS_Process_Task(void *arg) {
             gps_data_ready = 0;
 
             /* Print Raw Data */
+#if DEBUG_GPS_PRINT
             printf("[GPS_RAW] %s\r\n", gps_proc_buffer);
+#endif
             
             /* Parse Data */
             NMEA_GPRMC_Analysis(&gps_data, gps_proc_buffer);

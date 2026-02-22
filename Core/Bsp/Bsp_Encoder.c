@@ -1,35 +1,45 @@
-#include "bsp_encoder.h"
-#include "tim.h"
-
-// ¶¨ÒåÁ½¸öµç»úÊµÀý
-Encoder_t motor1 = {&htim3, 0, 0.0f};
-Encoder_t motor2 = {&htim5, 0, 0.0f};
-
-/**
- * @brief ³õÊ¼»¯±àÂëÆ÷²¢¿ªÆô¶¨Ê±Æ÷
- */
-void Encoder_Init(void) {
-    HAL_TIM_Encoder_Start(&htim3, TIM_CHANNEL_ALL);
-    HAL_TIM_Encoder_Start(&htim5, TIM_CHANNEL_ALL);
-    HAL_TIM_Base_Start_IT(&htim14); // ¿ªÆô 50ms ²ÉÑù¶¨Ê±Æ÷
-}
-
-/**
- * @brief ÔÚ¶¨Ê±Æ÷ÖÐ¶ÏÀïµ÷ÓÃ£¬¸üÐÂËÙ¶È
- * @note 4±¶ÆµÏÂ£¬Ò»È¦µÄ×ÜÂö³å = PPR * 4 * ¼õËÙ±È
- */
-void Encoder_Update_Speed(Encoder_t *m1, Encoder_t *m2) {
-    // 1. »ñÈ¡µ±Ç°¼ÆÊýÖµ²¢¼ÆËãÔöÁ¿£¨ÀûÓÃ16Î»Òç³öÌØÐÔ£©
-    int16_t cnt1 = (int16_t)__HAL_TIM_GET_COUNTER(m1->htim);
-    int16_t cnt2 = (int16_t)__HAL_TIM_GET_COUNTER(m2->htim);
-
-    // 2. ¼ÆËã RPM = (Âö³åÊý / (µ¥È¦Âö³å * 4 * ¼õËÙ±È)) / Ê±¼ä(s) * 60
-    float common_factor = (ENCODER_PPR * 4.0f * MOTOR_REDUCTION_RATIO * SAMPLE_TIME_S);
-    
-    m1->speed_rpm = -(cnt1 * 60.0f) / common_factor;
-    m2->speed_rpm = (cnt2 * 60.0f) / common_factor;
-
-    // 3. ¼ÆÊýÖµÇåÁã£¬ÎªÏÂÒ»´Î²ÉÑù×¼±¸
-    __HAL_TIM_SET_COUNTER(m1->htim, 0);
-    __HAL_TIM_SET_COUNTER(m2->htim, 0);
-}
+#include "bsp_encoder.h"
+#include "tim.h"
+#include "stdio.h"
+// å®šä¹‰ä¸¤ä¸ªç”µæœºå®žä¾‹
+Encoder_t motor1 = {&htim3, 0, 0.0f};
+Encoder_t motor2 = {&htim5, 0, 0.0f};
+
+/**
+ * @brief åˆå§‹åŒ–ç¼–ç å™¨å¹¶å¼€å¯å®šæ—¶å™¨
+ */
+void Encoder_Init(void) {
+    HAL_TIM_Encoder_Start(&htim3, TIM_CHANNEL_ALL);
+    HAL_TIM_Encoder_Start(&htim5, TIM_CHANNEL_ALL);
+    // HAL_TIM_Base_Start_IT(&htim14); // ç§»åˆ° Core_Main_Init ä¸­ç»Ÿä¸€å¯åŠ¨
+}
+
+/**
+ * @brief åœ¨å®šæ—¶å™¨ä¸­æ–­é‡Œè°ƒç”¨ï¼Œæ›´æ–°é€Ÿåº¦
+ * @note 4å€é¢‘ä¸‹ï¼Œä¸€åœˆçš„æ€»è„‰å†² = PPR * 4 * å‡é€Ÿæ¯”
+ */
+void Encoder_Update_Speed(Encoder_t *m1, Encoder_t *m2) {
+    // 1. èŽ·å–å½“å‰è®¡æ•°å€¼å¹¶è®¡ç®—å¢žé‡ï¼ˆåˆ©ç”¨16ä½æº¢å‡ºç‰¹æ€§ï¼‰
+    int16_t cnt1 = (int16_t)__HAL_TIM_GET_COUNTER(m1->htim);
+    int16_t cnt2 = (int16_t)__HAL_TIM_GET_COUNTER(m2->htim);
+
+    // 2. è®¡ç®— RPM = (è„‰å†²æ•° / (å•åœˆè„‰å†² * 4 * å‡é€Ÿæ¯”)) / æ—¶é—´(s) * 60
+    /* æ³¨æ„ï¼šåˆ†æ¯ä¸º (11 * 4 * 50 * 0.01) = 22.0 */
+    /* å¦‚æžœè½¬é€Ÿå¾ˆä½Žï¼Œ10ms å†…å¯èƒ½åªæœ‰1-2ä¸ªè„‰å†²ï¼Œcnt=1 -> RPM = 60/22 â‰ˆ 2.7 RPM */
+    /* å¦‚æžœè½¬é€Ÿä¸º0ï¼Œcnt=0 */
+    // float common_factor = (ENCODER_PPR * 4.0f * MOTOR_REDUCTION_RATIO * SAMPLE_TIME_S);
+    
+    // Debug: ç›´æŽ¥è¾“å‡º cnt1/cnt2 çœ‹æ˜¯å¦æœ‰å˜åŒ– (è°ƒè¯•æ—¶å–æ¶ˆæ³¨é‡Š)
+    // printf("Encoder: cnt1=%d, cnt2=%d\r\n", cnt1, cnt2);
+
+    /* å¢žåŠ é€Ÿåº¦ä¸º0çš„åˆ¤æ–­é€»è¾‘ï¼ˆé˜²æ­¢æŠ–åŠ¨æˆ–æžä½Žé€Ÿæ—¶çš„å™ªå£°ï¼‰ */
+    if (cnt1 == 0) m1->speed_rpm = 0.0f;
+    else m1->speed_rpm = -(float)cnt1 * 60.0f / (ENCODER_PPR * 4.0f * MOTOR_REDUCTION_RATIO * SAMPLE_TIME_S);
+
+    if (cnt2 == 0) m2->speed_rpm = 0.0f;
+    else m2->speed_rpm = (float)cnt2 * 60.0f / (ENCODER_PPR * 4.0f * MOTOR_REDUCTION_RATIO * SAMPLE_TIME_S);
+
+    // 3. è®¡æ•°å€¼æ¸…é›¶ï¼Œä¸ºä¸‹ä¸€æ¬¡é‡‡æ ·å‡†å¤‡
+    __HAL_TIM_SET_COUNTER(m1->htim, 0);
+    __HAL_TIM_SET_COUNTER(m2->htim, 0);
+}

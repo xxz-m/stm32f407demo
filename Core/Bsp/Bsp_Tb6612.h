@@ -3,24 +3,27 @@
 
 #include "main.h"
 #include "core_main_config.h"
-/* µç»ú¶ÔÏó½á¹¹Ìå */
+/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½á¹¹ï¿½ï¿½ */
 
 typedef struct {
-    // GPIO ¿ØÖÆÒı½Å
+    // GPIO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     GPIO_TypeDef* IN1_Port;
     uint16_t      IN1_Pin;
     GPIO_TypeDef* IN2_Port;
     uint16_t      IN2_Pin;
     
-    // PWM ¶¨Ê±Æ÷ÅäÖÃ
+    // PWM ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     TIM_HandleTypeDef* htim;
     uint32_t           Channel;
     
-    // ×î´ó¼ÆÊıÖµ (ÓÃÓÚÏŞ·ù)
+    // é™åˆ¶å€¼ (é˜²æ­¢æ— æ³•)
     uint32_t           Max_PWM;
 } TB6612_Motor_t;
 
-/* BSP ½Ó¿Úº¯Êı */
+extern TB6612_Motor_t motorL;
+extern TB6612_Motor_t motorR;
+
+/* BSP æ¥å£å‡½æ•° */
 void TB6612_Motor_Init(TB6612_Motor_t* motor);
 void TB6612_Motor_SetSpeed(TB6612_Motor_t* motor, int32_t speed);
 void Motor_init(void);

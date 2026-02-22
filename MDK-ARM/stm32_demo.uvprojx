@@ -434,6 +434,11 @@
               <FilePath>..\Core\Bsp\Bsp_Led.c</FilePath>
             </File>
             <File>
+              <FileName>Bsp_Key.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Bsp\Bsp_Key.c</FilePath>
+            </File>
+            <File>
               <FileName>Bsp_Encoder.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Core\Bsp\Bsp_Encoder.c</FilePath>
@@ -452,6 +457,16 @@
               <FileName>pid.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Core\Algo\pid.c</FilePath>
+            </File>
+            <File>
+              <FileName>Bsp_OpenMV.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Bsp\Bsp_OpenMV.c</FilePath>
+            </File>
+            <File>
+              <FileName>Bsp_Flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Bsp\Bsp_Flash.c</FilePath>
             </File>
           </Files>
         </Group>

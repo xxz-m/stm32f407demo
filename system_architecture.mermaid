@@ -1,0 +1,80 @@
+graph TD
+    %% Define Styles
+    classDef mcu fill:#8B4513,stroke:#333,stroke-width:2px,color:white;
+    classDef sensor fill:#228B22,stroke:#333,stroke-width:2px,color:white;
+    classDef actuator fill:#4682B4,stroke:#333,stroke-width:2px,color:white;
+    classDef power fill:#CD5C5C,stroke:#333,stroke-width:2px,color:white;
+    classDef comm fill:#DAA520,stroke:#333,stroke-width:2px,color:white;
+
+    subgraph MCU [STM32F4 Microcontroller]
+        direction TB
+        CenterAlgo[Control & Processing\n(PID + Kinematics)]:::mcu
+        
+        subgraph Periphs [Internal Peripherals]
+            UART6[USART6]:::mcu
+            UART3[USART3]:::mcu
+            UART2[USART2]:::mcu
+            TIM_Enc[TIM3 / TIM5]:::mcu
+            TIM_PWM[TIM4]:::mcu
+            I2C[I2C1]:::mcu
+            TIM_Loop[TIM14]:::mcu
+        end
+    end
+
+    subgraph Inputs [Sensors & Inputs]
+        direction TB
+        OpenMV[OpenMV Camera]:::sensor
+        GPS[GPS Module]:::sensor
+        Keys[User Keys]:::sensor
+    end
+
+    subgraph Comm [Communication]
+        WiFi[ESP8266 WiFi]:::comm
+    end
+
+    subgraph Outputs [Actuators & Display]
+        direction TB
+        OLED[OLED Display]:::actuator
+        LEDs[Status LEDs]:::actuator
+    end
+    
+    subgraph PowerSystem [Power Supply]
+        Battery[Battery Power]:::power
+    end
+
+    subgraph DriveSystem [Motor Drive System]
+        Driver[TB6612 Driver]:::actuator
+        MotorL[Left Motor]:::actuator
+        MotorR[Right Motor]:::actuator
+        EncL[Left Encoder]:::sensor
+        EncR[Right Encoder]:::sensor
+    end
+
+    %% Data Connections
+    OpenMV -->|UART TX/RX| UART6
+    GPS -->|UART TX/RX| UART3
+    WiFi <-->|UART TX/RX| UART2
+    Keys -->|GPIO/EXTI| CenterAlgo
+    
+    UART6 --> CenterAlgo
+    UART3 --> CenterAlgo
+    UART2 --> CenterAlgo
+    TIM_Loop -.->|10ms Interrupt| CenterAlgo
+    
+    CenterAlgo --> I2C --> OLED
+    CenterAlgo --> LEDs
+    
+    CenterAlgo --> TIM_PWM -->|PWM CH1/CH2| Driver
+    Driver -->|Motor Drive| MotorL
+    Driver -->|Motor Drive| MotorR
+    
+    MotorL -.->|Phase A/B| EncL
+    MotorR -.->|Phase A/B| EncR
+    EncL -->|Quad Pulse| TIM_Enc
+    EncR -->|Quad Pulse| TIM_Enc
+    TIM_Enc --> CenterAlgo
+    
+    %% Power Connections
+    Battery -->|VCC| Driver
+    Battery -->|3.3V/5V| MCU
+    Battery -->|Power| OLED

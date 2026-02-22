@@ -3,18 +3,21 @@
 
 #include "main.h"
 
-// ±àÂëÆ÷²ÎÊı¶¨Òå£¨Çë¸ù¾İÄúµÄÊµ¼ÊÇé¿öĞŞ¸Ä£©
-#define ENCODER_PPR          11     // ±àÂëÆ÷Ã¿×ªÂö³åÊı (Pulse Per Revolution)
-#define MOTOR_REDUCTION_RATIO 50    // µç»ú¼õËÙ±È
-#define SAMPLE_TIME_S        0.05f  // ËÙ¶È²ÉÑùÊ±¼ä (50ms)
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½å£¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ş¸Ä£ï¿½
+#define ENCODER_PPR          11     // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¿×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (Pulse Per Revolution)
+#define MOTOR_REDUCTION_RATIO 50    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ù±ï¿½
+#define SAMPLE_TIME_S        0.05f  // é€Ÿåº¦é‡‡æ ·æ—¶é—´ (50ms)
 
 typedef struct {
-    TIM_HandleTypeDef *htim; // Ö¸Ïò¶¨Ê±Æ÷µÄ¾ä±ú
-    int32_t last_count;      // ÉÏ´Î¼ÆÊıÖµ
-    float speed_rpm;         // ×ªËÙ£¨×ª/·ÖÖÓ, RPM£©
+    TIM_HandleTypeDef *htim; // æŒ‡å‘å®šæ—¶å™¨çš„å¥æŸ„
+    int32_t last_count;      // ä¸Šæ¬¡è®¡æ•°å€¼
+    float speed_rpm;         // è½¬é€Ÿï¼ˆè½¬/åˆ†é’Ÿ, RPMï¼‰
 } Encoder_t;
 
-// º¯ÊıÉùÃ÷
+extern Encoder_t motor1;
+extern Encoder_t motor2;
+
+// å‡½æ•°å£°æ˜
 void Encoder_Init(void);
 void Encoder_Update_Speed(Encoder_t *m1, Encoder_t *m2);
 
